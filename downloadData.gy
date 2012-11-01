@@ -1,0 +1,23 @@
+#!/usr/bin/env groovy
+
+println "Downloading data"
+
+def outFile = new File("downloaded_data.csv")
+
+new File("lse_stocks.txt").eachLine { line -> 
+
+    // trim line
+    line = line.trim()
+
+    URL url = new URL("http://ichart.finance.yahoo.com/table.csv?s=$line&a=00&b=1&c=2000&d=09&e=23&f=2012&g=d&ignore=.csv");
+    URLConnection uc = url .openConnection()
+    BufferedReader br = new BufferedReader( new InputStreamReader(uc.getInputStream()))
+    def inputLine=null
+
+    while ((inputLine = br.readLine()) != null) {
+	outFile.append(line + "," + inputLine + System.getProperty("line.separator"))
+    }
+    br.close()
+}
+
+println "Data download complete"
